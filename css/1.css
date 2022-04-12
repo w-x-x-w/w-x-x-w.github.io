@@ -12,6 +12,30 @@ p{font-size:30;
 height:50;
 position:relative;
 left:10px;
+top:10px;
+}
+
+img{
+width:60px;
+height:60px;
+}
+
+.left{
+padding-top:25px;
+float:left;
+display: flex;
+flex-wrap: wrap;
+width:15%;
+background-color:rgba(255,255,255,0.3);
+}
+
+.right{
+padding-top:25px;
+float:right;
+display: flex;
+flex-wrap: wrap;
+width:15%;
+background-color:rgba(255,255,255,0.3);
 }
 
 .biggest{
@@ -24,8 +48,6 @@ background-color:rgba(255,255,255,0.3);
 .wangzhankapian{
 width:100px;
 height:100px;
-
-
 
 margin:auto;
 border-radius: 5px;
@@ -41,12 +63,10 @@ cursor: pointer;
 width:60;
 height:60;
 margin:auto;
+align-items:center;
 }
 
-img{
-width:60;
-weight:60;
-}
+
 
 .wangzhanmingcheng{
 width:100;
