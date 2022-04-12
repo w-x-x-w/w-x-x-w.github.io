@@ -1,0 +1,90 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+  canvas {
+      display: block;
+      border: gray solid 1px;
+      width: 600px;
+      height: 600px;
+      image-rendering: pixelated;
+    }
+    img {
+      display: none;
+    }
+    body{display:flex;
+    align-items: center;
+    justify-content: center;}
+</style>
+
+</head>
+<body>
+<div>
+<input id="file" type="file" accept="image/*" />
+  <canvas id="canvas"></canvas>
+  <img id="img-raw" />
+  <label for="compress-times">压缩倍数：</label>
+  <input id="compress-times" type="number" value="12">
+  <button>马赛克化</button>
+</div>
+</body>
+
+<script type="text/javascript">
+  let imgBlobUrl;
+  const file = document.getElementById('file');
+  const img = document.getElementById('img-raw');
+  const compressTimes = document.getElementById('compress-times');
+  const defaultCompressTimes = compressTimes.value | 0;
+  const canvas = document.getElementById('canvas');
+  const button = document.querySelector('button');
+
+  const boundingRect = canvas.getBoundingClientRect();
+  const ctx = canvas.getContext('2d');
+  const canvas_w = boundingRect.width;
+  const canvas_h = boundingRect.height;
+
+  // 以 background-size: contain 形式设置图片尺寸
+  function matchImgSizeToCanvas(imgElem = img) {
+    let w = imgElem.width;
+    let h = imgElem.height;
+    if (w > canvas_w || h > canvas_h) {
+      let radio = Math.max(h / canvas_h, w / canvas_w);
+      radio = Number(radio.toFixed(2));
+      imgElem.width = parseInt(w / radio);
+      imgElem.height = parseInt(h / radio);
+    }
+  }
+
+  // 绘制 1/N 大小的图像，画布宽高属性设为样式宽高的 1/N，从而实现画布内容的 N 倍放大
+  function run() {
+    let ct = parseInt(compressTimes.value) || defaultCompressTimes;
+    canvas.width = parseInt(canvas_w / ct);
+    canvas.height = parseInt(canvas_h / ct);
+    ctx.drawImage(img, 0, 0, parseInt(img.width / ct), parseInt(img.height / ct));
+  }
+
+  function cleanCanvas() {
+    ctx.clearRect(0, 0, canvas_w, canvas_h);
+  }
+
+  function reset() {
+    img.removeAttribute('width');
+    img.removeAttribute('height');
+    cleanCanvas();
+    matchImgSizeToCanvas(img);
+    run();
+  }
+
+  file.addEventListener('change', function (e) {
+    window.URL.revokeObjectURL(imgBlobUrl);
+    const picFile = this.files[0];
+    imgBlobUrl = window.URL.createObjectURL(picFile);
+    img.onload = function init() {
+      reset();
+    }
+    img.src = imgBlobUrl;
+  }, false);
+
+  button.addEventListener('click', reset, false);
+</script>
+</html>
